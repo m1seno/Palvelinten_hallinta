@@ -25,7 +25,7 @@ Olen myös aikaisemmin asentanut virtuaalikoneen, jolla voin tehdä testejä kur
 
 
 ## b) Sshecrets. Asenna SSH-demoni käsin ja testaa se kirjautumalla SSH:lla. (localhost kelpaa)
-Aloitin käynnistämällä ssh demonin komennolla `sudo systemctl enable --now ssh`. Olin jo aikaisemmin asentanut ssh:n avainten generoimista varten.  
+Avasin virtuaalikoneeni ja käynnistin siihen ssh demonin komennolla `sudo systemctl enable --now ssh`. Olin jo aikaisemmin asentanut ssh:n avainten generoimista varten.  
 Tarkistin vielä, että demoni on käynnissä komennolla `sudo systemctl status ssh`. Kaikki vaikuttaisi olevan kunnossa.
 ![](h1/ssh-daemon.png)
 
@@ -44,15 +44,44 @@ Vuokrasin myös virtuaalipalvelimen ja toistin edellämainitut toimenpiteet. Sai
 Nyt minulla on siis keksi erillistä konetta mihin voin ajaa komentoja Ansiblella.
 
 ## c) Pubkey. Automatisoi ssh-kirjautuminen julkisella avaimella. (localhost kelpaa)
-
+Jaaha, en huomannutkaan että tästä oli erillinen tehtävä. Kyseiset toimenpiteet tehty siis edellisessä osiossa.
 
 ## d) Hei Ansible. Tee hei maailma ansiblella ja kokeile sitä SSH:n yli. (localhost kelpaa)
+Tässä osiossa seurasin aikaisemmin lukemaani Teron ohjetta Hello Ansible (Karvinen 2026)
+
+Aloitin asentamalla Ansiblen sekä sen riippuvuudet komennolla `sudo dnf isntall ansible`.
+![](h1/install_ansible.png)
+
+Loin uuden ansible nimisen kansion ja lisäsin sinne tiedoston hosts.ini. Tiedostoon lisäsin sekä virtuaalikoneeni että palvelimeni ip-osoitteet.
+![](h1/hosts_ini.png)
+
+Seuraavaksi oli sitten aika testata etäyhteyden avaamista, joten suoritin saman uptime testin, jonka Tero oli tehnyt omassa ohjeessaan.  
+Testi kuitenkin epäonnistui seuraavalla virheilmoituksella:
+![](h1/ansible_error1.png)
+
+Virheilmoituksessa näkyy selvästi kaksi vikaa:
+Virtuaalipalvelimella Permission denied (publickey) -> eli yhteys saatiin, mutta julkinen avain ei hyväksynyt sisäänkirjautumista.  
+Virtuaalikoneella No route to host -> eli yhteys ssh demoniin ei onnistunut. Joko portti on kiinni tai demoni ei ole käynnissä. Tämä oli hieman kummallinen ilmoitus, sillä olin juuri tarkistanut että kaikki toimii.
+
+Oli miten oli, oma kompetenssi ei tässä kohtaa enää riittänyt analysoimaan sen pidemmälle, vaan lähetin kyseisen kuvakaapauksen tekoälylle ja kysyin neuvoa (ChatGPT1).
+ 
+Tekoäly osasikin pyytää tarkistamaan, että hostit on merkitty oikein hosts.ini:n.
+![](h1/gpt_user.png)
+
+Ei ollut tullut mieleen että kyllähän ssh tietenkin tarvitsee käyttäjän nimen jolla halutaan kirjautua sisään, eikä pelkästään hostin ip-osoitetta.  
+Kävin vaihtamassa tiedoston sisällön tekoälyn ehdottamaan muotoon ja tein uuden testin. Kuten olettaa saattoi, nyt yhteys palvelimeen onnistui, mutta virtuaalikone junnasi vielä vastaan.
+
+![](h1/ansible_error2.png)
 
 
 ## e) Vapaaehtoinen bonus: kokeile Ansiblella jokin näista asetuksista: paketin asennus, asetustiedosto /etc/ alle, käynnistä jokin demoni, tee uusi käyttäjä. Tarvitset todennäköisesti sudoa, become: true.
 
 
 ## Lähteet
+ChatGPT1. Prompt: Tein ansiblella yhteystestin joka epäonnistui. Onko ajatuksia mistä vika voi johtua. Olen tarkistanut että saan avattua normaalin ssh-yhteyden molempiin koneisiin.
+
 Karvinen, T. 2026. Palvelinten Hallinta. Luettavissa: https://terokarvinen.com/palvelinten-hallinta/ Luettu: 23.10.2026
+
 Karvinen, T. 2026. SSH public key - Login without password. Luettavissa https://terokarvinen.com/ssh-public-key-login-without-password/ Luettu: 23.10.2026.
+
 Karvinen, T. 2026. Hello Ansible. Luettavissa: https://terokarvinen.com/hello-ansible/. Luettu: 23.10.2026.
