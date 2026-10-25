@@ -70,9 +70,30 @@ Tekoäly osasikin pyytää tarkistamaan, että hostit on merkitty oikein hosts.i
 
 Ei ollut tullut mieleen että kyllähän ssh tietenkin tarvitsee käyttäjän nimen jolla halutaan kirjautua sisään, eikä pelkästään hostin ip-osoitetta.  
 Kävin vaihtamassa tiedoston sisällön tekoälyn ehdottamaan muotoon ja tein uuden testin. Kuten olettaa saattoi, nyt yhteys palvelimeen onnistui, mutta virtuaalikone junnasi vielä vastaan.
-
 ![](h1/ansible_error2.png)
 
+Ja lopulta selvisi myös ongelma virtuaalikoneen kanssa. Se oli vain sammunut itsestään. Kun laitoin sen uudestaan päälle, niin sain samantien yhteyden molempiin.
+![](h1/ansible_success.png)
+
+Seuraavaksi määritin hosts.ini -tiedostoon pythonin polun
+```
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+```
+Näin ollen ansible ei enää varoita python version vaihtumisesta koituvista ongelmista ja tuloste on siistimpi.
+![](h1/ansible_python.png)
+
+Toinen elämää helpoittava kikka on lisätä ansible.cfg -tiedosto, johon määrittelemme että ansible ja ansible-playbook komennot suoritetaan oletuksena hosts.ini -tiedostossa määriteltyihin koneisiin.
+```
+[defaults]
+inventory = hosts.ini
+```
+Nyt lyhyempi komento riittää ansiblen ajamiseen.
+![](h1/ansible-cfg.png)
+
+Seuraavaksi tein site.yml -tiedoston. Sinne määritellään mikä kone saa minkäkin configuraation.
+Tulos oli odotetunlainen, sillä en ollut vielä tehnyt hello -roolia, joten ansible ei löydä sitä.
+![](h1/yml.png)
 
 ## e) Vapaaehtoinen bonus: kokeile Ansiblella jokin näista asetuksista: paketin asennus, asetustiedosto /etc/ alle, käynnistä jokin demoni, tee uusi käyttäjä. Tarvitset todennäköisesti sudoa, become: true.
 
