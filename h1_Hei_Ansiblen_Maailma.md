@@ -14,7 +14,11 @@ Oma huomio: Jotta salasanaton kirjautuminen onnistuu, on julkisen ssh-avaimen ol
 #### Hello Ansible (Karvinen 2026)
 - Ansible on hallintaohjelma, jolla voi konfiguroida useampia koneita keskitetysti. 
 - Ansible käyttää ssh -protokollaa yhteyden muodostamiseen, joten ssh demoni pitäisi olla asennettuna kohdekoneeseen.
-- 
+- Etähallittavat koneet määritellään hosts.ini -tiedostossa.
+- Site.yml määrittelee mitkä koneet saavat mitäkin configuraatioita.
+- Rooleihin määritellään tehtävät konfiguraatiot.
+
+Oma huomio: Ansiblen täytyy tietää millä käyttäjällä halutaan kirjautua esim virtuaalipalvelimeen. Nämä määritykset tehdään myös hosts.ini -tiedostoon.
 
 ## a) Paikallista. Asenna Debian 13 paikallisesti virtuaalikoneeseen. Voit käyttää esimerkiksi VirtualBoxia. (Tätä käytetään myös tuntiharjoituksiin. Jos raportoit tämän jo h0 yhteydessä, pelkkä linkki raporttiin riittää. Suppea raportointi tässä alakohdassa: mikäli ongelmia ei tullut, pelkkä luettelo tehdyistä valinnoista riittää. Jos ongelmia, yksityiskohtainen, toistettava raportti.)
 Minulla on linux omassa läppärissäni, jolla tulen tekemään kaikki tämän kurssin tehtävät.
