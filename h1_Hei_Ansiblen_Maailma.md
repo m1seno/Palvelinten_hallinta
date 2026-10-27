@@ -106,7 +106,7 @@ Nyt kun ajamme uudestaan playbookin, niin huomaamme että muutokset tehtiin. Tar
 ![](h1/ansible-playbook.png)
 
 ## e) Vapaaehtoinen bonus: kokeile Ansiblella jokin näista asetuksista: paketin asennus, asetustiedosto /etc/ alle, käynnistä jokin demoni, tee uusi käyttäjä. Tarvitset todennäköisesti sudoa, become: true.
-
+Teen vielä keskiviikkona jos ehdin.
 
 ## Lähteet
 ChatGPT1. Prompt: Tein ansiblella yhteystestin joka epäonnistui. Onko ajatuksia mistä vika voi johtua. Olen tarkistanut että saan avattua normaalin ssh-yhteyden molempiin koneisiin.
