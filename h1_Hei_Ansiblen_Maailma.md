@@ -95,6 +95,16 @@ Seuraavaksi tein site.yml -tiedoston. Sinne määritellään mikä kone saa mink
 Tulos oli odotetunlainen, sillä en ollut vielä tehnyt hello -roolia, joten ansible ei löydä sitä.
 ![](h1/yml.png)
 
+Tein uuden roles/hello/tasks/ -hakemiston, johon tein main.yml tiedoston.
+![](h1/roles-main.png)
+
+- copy kopioi sisällön kohdekoneelle.
+- dest määrittää mihin hakemistoon muutos tehdään.
+- content määrittää kopioitavan sisällön.
+
+Nyt kun ajamme uudestaan playbookin, niin huomaamme että muutokset tehtiin. Tarkistin lopuksi vielä ssh:lla, että muutokset tosiaan tehtiin.
+![](h1/ansible-playbook.png)
+
 ## e) Vapaaehtoinen bonus: kokeile Ansiblella jokin näista asetuksista: paketin asennus, asetustiedosto /etc/ alle, käynnistä jokin demoni, tee uusi käyttäjä. Tarvitset todennäköisesti sudoa, become: true.
 
 
