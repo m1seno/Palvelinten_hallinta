@@ -145,10 +145,58 @@ Esimerkki:
 - Lisää julkinen ssh-avain. Avain haetaan ohjauskoneen käyttäjän kotihakemistosta.
 
 ## a)  Sudoless. Tee ansiblea varten tunnus, jolla voi käyttää sudoa ilman salasanaa. Sekä ssh-kirjautuminen että sudon käyttö tulee olla ansbilea varten automatisoitu.
+Seurasin Teron (Karvinen 2026, 1) dokumentaatiota ja loin uuden käyttäjän `sudo adduser ansimi`. Loin uuden käyttäjäryhmän `sudo groupadd sudoless`, ja lopulta lisäsin uuden käyttäjän kyseiseen ryhmään `sudo adduser ansimi sudoless`.
 
+![](h2/ansimi.png)
+
+Tässä kohtaa pelasin varman päälle ja avasin uuden shellin, jolla kirjauduin uudestaan sisään ja vaihdoin root-käyttäjäksi. Jos jokin menisi pieleen, voisin tätä kautta lähteä selvittelemään aiheuttamiani sotkuja.
+
+![](h2/root.png)
+
+Loin uuden tiedoston sudoers.d -kansioon, ja lisäsin sinne tekstin `%sudoless ALL = (ALL) NOPASSWD: ALL`
+- `%sudoless` ryhmä johon sääntö halutaan kohdentaa.
+- `ALL` sääntö koskee kaikkia isäntäkoneita.
+- (ALL) Sääntö koskee kaikkia ryhmän jäseniä.
+- `NOPASSWD: ALL` Salasanaa ei vaadita ja sääntö koskee kaikkia komentoja.
+
+![](h2/sudoers.png)
+
+Lopuksi tein testin kirjautumalla sisään ja ajamalla sudo -komennon. Minulta ei kysytty salasanaa, joten muutokset tehtiin onnistuneesti.
+
+![](h2/sudoless_test.png)
 
 ## b) Antero. Tee salasanaton, automaattisesti ssh:lla kirjautuva tunnus Ansiblella.
+Aloitin luomalla uuden hakemistopolun sudoless -toiminnolle `mkdir -p roles/ansimi/tasks/`. Tänne loin uuden main.yml -tiedoston.  
+Tiedostoon lisäsin Teron dokumentaatiosta löytyvät tekstit pienten muokkausten kera.
 
+![](h2/ansimi-ansible.png)
+
+- main.yml sisältö selitettynä aiakisemmassa tehtävässä (x - Passwordless sudo with Ansible)
+
+Edellisessä tehtävässä luomani salasanattoman käyttäjän tein virtuaalikoneelleni (VM). Minulla on myös virtuaalipallvelin (VPS). Tulen seuraavassa vaiheessa ajamaan ansible -roolin molemmille koneille. Tulostuksessa pitäisi näkyä, että VPS:ssä on tapahtunut enemmän muutoksia, sillä VM:lle lisätään ainoastaan julkinen SSH-avain käyttäjän kotihakemistoon.
+
+Kävin vielä ennen ajoa muokkaamassa site.yml -tiedostoa. Lisäsin `become: true`, joka suorittaa tehtävän korotetuilla oikeuksilla.
+
+![](h2/site.png)
+
+Sitten ajoa!  
+Ensimmäinen error -viesti kertoo selkeästi vian syyn. Group -määritykset olivat menneet hienosti läpi, mutta user -moduulissa on käytetty jotain siihen kuulumatonta parametria.
+
+![](h2/error1.png)
+
+Tarkasteltaessa vikakin löytyi nopeasti. Groups -sanaan oli sattunut typo.
+
+![](h2/error_syy.png)
+
+Korjasin kirjoitusvirheen ja ajoin playbookin uudestaan. Tällä kertaa homma meni läpi nätisti.
+
+![](h2/playbook_success.png)
+
+Itseäni jäi vielä mietityttämään, että miksi virtuaalikoneellani tapahtui muutoksia, vaikka samat asiat oltiin jo määritelty manuaalisesti. Tämänhetkinen hypoteesi on, että user -moduulissa määriteltiin ryhmiksi myös sudo ja admin, joita ei edellisessä harjoituksessa tehty. copy -moduulissa sen sijaan määriteltiin tiedoston käyttöoikeudet, jotka saattavat poiketa edellisessä tehtävässä luodun tiedoston default-käyttöoikeuksista.
+
+Seuraavaksi muokkasin hosts.ini -tiedostoa. Lisäsin sinne uuden käyttäjän ja muutin kohdekoneiden listan sellaiseksi, että julikista ip-osoitetta ei tarvitse blurrata joka kerta kun ajan playbookin.
+
+![](h2/hosts.png)
 
 ## c) Package. Asenna kaksi pakettia ansiblella.
 
