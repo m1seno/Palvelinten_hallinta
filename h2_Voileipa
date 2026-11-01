@@ -1,0 +1,179 @@
+# Voileipä
+Harjoitukset on tehty kotitoimistossa Kaarinassa. Koneena oli Tuxedo InfinityBook Pro AMD Gen10. Käyttöjärjestelmän toimi Fedora Linux 44.  
+Harjoituksessa seurataan Teron kotisivujen (Karvinen 2026, 1) tehtävänantoa.
+
+## x) Lue ja tiivistä
+### Sudo without password (Karvinen 2026, 2)
+- Ansiblella voi ajaa komentoja jotka vaativat sudo-oikeuksia. Sudon voi sallia toimimaan ilman salasanaa.
+- Luo uusi käyttäjä (omalle käyttäjälle ei kannata antaa salasanattomia sudo-oikeuksia). Luo uusi käyttäjäryhmä ja lisää uusi käyttäjä siihen.
+- Avaa uusi shell ja siirry root -käyttäjäksi `sudo -i` (ainut tapa korjata sudo jos jokin menee pieleen.)
+- Tee uusi tiedosto `sudo visudo /etc/sudoers.d/sudoless` ja lisää sinne configuraatio `%sudoless ALL = (ALL) NOPASSWD: ALL`
+	- sudoers.d mahdollistaa uusien sääntöjen luomisen ilman että tarvitsee kajote "rinnakkaistiedostoon" sudoers.
+
+Oma havainto: Sudoless -käyttäjä luo ilmiselvän turvallisuusriskin koneelle. Kannattaa varmistaa, että salasana on erittäin vahva, tai vielä parempi, ssh-salasanakirjautuminen palvelimelle on estetty ja pelkästään avainparikirjautuminen on sallittu.
+
+	sudo micro /etc/ssh/sshd_config
+	PubkeyAuthentication yes
+	PasswordAuthentication no
+
+### xkcd 149: Sandwitch(Munroe 2006)
+- Erinomainen jäniskevennys.
+
+### Passwordless sudo with Ansible (Karvinen 2026, 3)
+- Edellisessä Teron artikkelissa (Karvinen 2026, 2) kuvailtu sudoless -käyttäjä voidaan luoda myös suoraan ansiblella. Kannattaa kuitenkin pitää mielessä käytäntö, jonka mukaan ainoastaan manuaalisesti opitut asiat automatisoidaan.
+- Luo uusi rooli sudoless-määrittelyä varten.
+- Luo roolille main.yml, johon tehdään suraavat määritykset:
+	- Luo uusi sudoless -ryhmä.
+	- Luo uusi käyttäjä, joka lisätään sudo, sudoless ja admin ryhmiin.
+	- Lisää julkinen ssh-avain käyttäjän kotihakemistoon.
+	- Luo sudoless tiedosto sudoers.d -hakemistoon ja aseta siihen oikeat käyttöoikudet.
+- Kun ajat käyttäjällä ansiblea ensimmäisen kerran, tarvitset sudoa, joten määritä site.yml `become: true`.
+
+### ansible-doc copy
+- Copy -moduulia käytetään tiedoston tai hakemistorakenteen kopioimiseen hallintakoneelta kohdekoneelle.
+- Tiedostojen käyttöoikeuksia voi hallita mode avain-arvo-parilla.
+
+Optiot:
+
+| Optio | Selitys |
+|---|---|
+| `content` | Määrittää tiedoston sisällön suoraan. |
+| `dest` | Kohdetiedoston tai -hakemiston polku. |
+| `group` | Tiedoston omistajaryhmä. |
+| `mode` | Tiedoston käyttöoikeudet (`chmod`). |
+| `owner` | Tiedoston omistajakäyttäjä. |
+| `src` | Kopioitavan lähdetiedoston polku. |
+
+```
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: /srv/myfiles/foo.conf
+    dest: /etc/foo.conf
+    owner: foo
+    group: foo
+    mode: '0644'
+```
+- Kopioi tiedosto, määritä sen haltija ja sen oikeudet.
+
+### ansible-doc apt
+- Apt -moduulia käytetään paketinhallintaan Debian ja Ubuntu -pohjaisissa distroissa.
+
+Optiot:
+
+| Optio | Selitys |
+|---|---|
+| `name` | Asennettavan tai poistettavan paketin nimi. |
+| `state` | Paketin haluttu tila (viimeisin versio, paketin riippuvuudet jne). |
+| `update_cache` | Päivittää apt-pakettiluettelon. |
+
+Esimerkki:
+```
+- name: Install a list of packages
+  ansible.builtin.apt:
+    pkg:
+    - foo
+    - foo-tools
+```
+- Asenna useampi paketti yhdellä kerralla.
+
+### ansible-doc file
+- Määritä tiedostojen ja hakemistojen ominaisuuksia, kuten omistajat, käyttöoikeudet ja symboliset ja kovat linkit.
+
+Optiot:
+| Optio | Selitys |
+|---|---|
+| `path` | Hallittavan tiedoston tai hakemiston polku. |
+| `recurse` | Muuttaa hakemiston oikeudet ja omistajuuden rekursiivisesti. |
+| `src` | Symbolisen tai kovan linkin kohdepolku. |
+| `state` | Kohteen haluttu tila (`file`, `directory`, `touch`, `link`, `hard`, `absent`). |
+| `owner` | Tiedoston tai hakemiston omistajakäyttäjä. |
+| `group` | Tiedoston tai hakemiston omistajaryhmä. |
+| `mode` | Tiedoston tai hakemiston käyttöoikeudet (`chmod`). |
+
+Esimerkki:
+```
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /file/to/link/to
+    dest: /path/to/symlink
+    owner: foo
+    group: foo
+    state: link
+```
+- Määritä kahden tiedoston välille symbolinen linkki.
+
+### ansible-doc user
+- Hallitse käyttäjiä ja niiden ominaisuuksia.
+
+| Optio | Selitys |
+|---|---|
+| `name` | Hallittavan käyttäjän tunnus. |
+| `create_home` | Luo käyttäjälle kotihakemiston. |
+| `comment` | Käyttäjän kuvaus tai koko nimi. |
+| `groups` | Käyttäjän lisäryhmät. |
+| `shell` | Käyttäjän oletuskomentotulkki. |
+| `state` | Käyttäjän haluttu tila (`present`, `absent`). |
+| `system` | Luo käyttäjän järjestelmätunnuksena. |
+
+Esimerkki:
+```
+- name: Add the user 'johnd' with a specific uid and a primary group of 'admin'
+  ansible.builtin.user:
+    name: johnd
+    comment: John Doe
+    uid: 1040
+    group: admin
+```
+- Lisää uusi käyttäjä, määrittele hänelle käyttäjä-ID sekä mihin ryhmään kuuluu.
+
+### ansible-doc authorized_key
+- Lisää tai poista käyttäjän ssh-avaimet.
+
+| Optio | Selitys |
+|---|---|
+| `user` | Käyttäjä, jonka SSH-avaimia hallitaan. |
+| `key` | Lisättävä julkinen SSH-avain. |
+
+Esimerkki:
+```
+- name: Set authorized keys taken from path on controller node
+  ansible.posix.authorized_key:
+    user: charlie
+    state: present
+    key: file:///home/charlie/.ssh/id_rsa.pub
+```
+- Lisää julkinen ssh-avain. Avain haetaan ohjauskoneen käyttäjän kotihakemistosta.
+
+## a)  Sudoless. Tee ansiblea varten tunnus, jolla voi käyttää sudoa ilman salasanaa. Sekä ssh-kirjautuminen että sudon käyttö tulee olla ansbilea varten automatisoitu.
+
+
+## b) Antero. Tee salasanaton, automaattisesti ssh:lla kirjautuva tunnus Ansiblella.
+
+
+## c) Package. Asenna kaksi pakettia ansiblella.
+
+
+## d) File. Kirjoita orjalle useamman rivin mittainen tiedosto Ansiblella. Määrittele sen omistaja, omistava ryhmä ja oikeudet. Käytä oikeuksille oktaalinumeroa, esim. "0600". Kerro, mitä oikeudet ovat symbolisessa muodossa, esim. "-rwxr--r--". Selitä, mitä kukin käyttäjä saa tehdä tuolle tiedostolle.
+
+
+## e) Jotain muuta. Näytä esimerkki ansiblen käskystä, jota ei ole vielä käsitelty kurssilla tai kotitehtävissä. Voit ottaa jonkun muun modulin kuin apt, file, copy, user tai authorized_key. Tai voit käyttää ominaisuutta, jota ei vielä ole demonstroitu. Jos tiivistystehtävässä x on mainittu ominaisuuksia, joita ei tunneilla tai läksyissä kokeiltu, nekin kelpaavat.
+
+
+## Lähteet
+ansible-doc copy. Ansiblen sisäänrakennettu dokumentaatio copy -moduulista.
+
+ansible-doc apt. Ansiblen sisäänrakennettu dokumentaatio apt -moduulista.
+
+ansible-doc file. Ansiblen sisäänrakennettu dokumentaatio file -moduulista.
+
+ansible-doc user. Ansiblen sisäänrakennettu dokumentaatio user -moduulista.
+
+ansible-doc authorized_key. Ansiblen sisäänrakennettu dokumentaatio authorized_key -moduulista.
+
+Karvinen, T 1. 2026. Palvelinten Hallinta. Luettavissa: https://terokarvinen.com/palvelinten-hallinta/. Luettu: 23.10.2026
+
+Karvinen, T 2. 2026. Sudo without password. Luettavissa: https://terokarvinen.com/passwordless-sudo/. Luettu 31.10.2026
+
+Karvinen, T 3. 2026. Passwordless Sudo with Ansible: https://terokarvinen.com/passwordless-sudo-with-ansible/. Luettu: 31.10.2026.
+
+Munroe, R. 2006. Sandwich. Luettavissa: https://xkcd.com/149/. Luettu: 31.10.2026.
