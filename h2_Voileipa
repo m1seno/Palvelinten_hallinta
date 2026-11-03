@@ -194,12 +194,43 @@ Korjasin kirjoitusvirheen ja ajoin playbookin uudestaan. Tällä kertaa homma me
 
 Itseäni jäi vielä mietityttämään, että miksi virtuaalikoneellani tapahtui muutoksia, vaikka samat asiat oltiin jo määritelty manuaalisesti. Tämänhetkinen hypoteesi on, että user -moduulissa määriteltiin ryhmiksi myös sudo ja admin, joita ei edellisessä harjoituksessa tehty. copy -moduulissa sen sijaan määriteltiin tiedoston käyttöoikeudet, jotka saattavat poiketa edellisessä tehtävässä luodun tiedoston default-käyttöoikeuksista.
 
+Kävin vielä manuaalisesti tarkistamassa Parrotin `/etc/passwd`, `/etc/group` sekä `etc/sudoers.d/sudoless`, ettei sinne ollut tullut mitään huolimattomuusvirheitä.
+
 Seuraavaksi muokkasin hosts.ini -tiedostoa. Lisäsin sinne uuden käyttäjän ja muutin kohdekoneiden listan sellaiseksi, että julikista ip-osoitetta ei tarvitse blurrata joka kerta kun ajan playbookin.
 
 ![](h2/hosts.png)
 
-## c) Package. Asenna kaksi pakettia ansiblella.
+Nyt voimme ajaa ansiblen täysin ilman become -salasanaa, kas näin.
 
+![](h2/ansimi-playbook.png)
+
+## c) Package. Asenna kaksi pakettia ansiblella.
+Tein hakemiston `/roles/packages/tasks` ja sinne main.yml.  
+Mainiin laitoin testimielessä asennettavaksi kaksi pientä ohjelmaa, curl ja tree.  
+site.yml lisäsin kyseisen roolin.
+
+![](h2/packages.png)
+
+Sitten ajoin taas playbookin.
+
+![](h2/packages-playbook.png)
+
+apt -rooli luettiin, mutta mikään ei muuttunut. Johtunee siitä, että molemmat ohjelmat ovat jo asennettuina molemmille koneille.  
+Koitetaan seuraavaksi asentaa pari ohjelmaa jotka eivät ainakaan ole asennettuina.
+
+![](h2/new-packages.png)
+
+- tealdeer (ajetaan tldr) on kätevä ohjelma, joka näyttää kompaktin listauksen yleisimmistä komennoista ja tavoista käyttää tiettyä ohjelmaa. Tämä on erinomainen tapa virkistää muistia jos on unohtanut peruskomennon ja ei jaksa plärätä man-sivuja. 
+- btop on järjestelmänvalvontaohjelma, joka listaa käynnissä olevat prosessit ja näyttää prosessorin, muistin ja verkon tilanteen.
+
+Nyt kun ajoin ohjelman, niin koneissa tapahtui muutos.
+
+![](h2/new-packages-playbook.png)
+
+Käydään tarkistamassa että paketit asentuivat.
+
+![](h2/tldr.png)
+![](h2/btop.png)
 
 ## d) File. Kirjoita orjalle useamman rivin mittainen tiedosto Ansiblella. Määrittele sen omistaja, omistava ryhmä ja oikeudet. Käytä oikeuksille oktaalinumeroa, esim. "0600". Kerro, mitä oikeudet ovat symbolisessa muodossa, esim. "-rwxr--r--". Selitä, mitä kukin käyttäjä saa tehdä tuolle tiedostolle.
 
