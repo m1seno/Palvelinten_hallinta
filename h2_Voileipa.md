@@ -29,6 +29,8 @@ Oma havainto: Sudoless -käyttäjä luo ilmiselvän turvallisuusriskin koneelle.
 	- Luo sudoless tiedosto sudoers.d -hakemistoon ja aseta siihen oikeat käyttöoikudet.
 - Kun ajat käyttäjällä ansiblea ensimmäisen kerran, tarvitset sudoa, joten määritä site.yml `become: true`.
 
+Oma havainto: Käsittääkseni antero -käyttäjä lisätään turhaan sudo ryhmään. sudoers.d -tiedostoon tehtävä määritys antaa käyttäjälle jo täydet sudo-oikeudet, joten miksi kuulua lisäksi vielä sudo-ryhmään?
+
 ### ansible-doc copy
 - Copy -moduulia käytetään tiedoston tai hakemistorakenteen kopioimiseen hallintakoneelta kohdekoneelle.
 - Tiedostojen käyttöoikeuksia voi hallita mode avain-arvo-parilla.
