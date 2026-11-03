@@ -233,10 +233,29 @@ Käydään tarkistamassa että paketit asentuivat.
 ![](h2/btop.png)
 
 ## d) File. Kirjoita orjalle useamman rivin mittainen tiedosto Ansiblella. Määrittele sen omistaja, omistava ryhmä ja oikeudet. Käytä oikeuksille oktaalinumeroa, esim. "0600". Kerro, mitä oikeudet ovat symbolisessa muodossa, esim. "-rwxr--r--". Selitä, mitä kukin käyttäjä saa tehdä tuolle tiedostolle.
+Aloitin taas tekemällä hakemiston ja tiedoston.
 
+![](h2/file.png)
 
+- Tässä luodaan ensin tiedosto dest:ssä kuvattuun polkuun.
+- Tiedoston sisältö määritellään content- optiolla.
+- File -moduulissa kuvataan polku optiolla path samaan tiedostoon.
+- Määritellään omistajaksi ansimi ja ryhmäksi anismi -ryhmä.
+- Oikeudet ovat -rw-r-----. Eli omistaja voi lukea ja muokata tiedostoa. Ryhmän muut jäsenet voivat lukea tiedoston. Kaikilla muilla ei ole mitään asiaa tiedostoon.
+
+Tämä aiheutti errorin. Ensimmäinen steppi, eli tiedoston luominen onnistui, mutta kuten errorista näkee, kun tiedoston oikeuksia yritettiin muokata, sitä ei löytynytkään. Tämä johtui taas kirjoitusvirheestä.
+
+![](h2/error2.png)
+
+Kun korjasin sen ja ajoin playbookin uudestaan, niin homma meni onnistuneesti läpi.
+
+![](h2/file-playbook.png)
+
+Lopulta kävin vielä tarkistamassa että tiedosto löytyi oikeasta paikasta, ja että omistajat ja oikeudet olivat oikein.
+
+![](h2/file-test.png)
 ## e) Jotain muuta. Näytä esimerkki ansiblen käskystä, jota ei ole vielä käsitelty kurssilla tai kotitehtävissä. Voit ottaa jonkun muun modulin kuin apt, file, copy, user tai authorized_key. Tai voit käyttää ominaisuutta, jota ei vielä ole demonstroitu. Jos tiivistystehtävässä x on mainittu ominaisuuksia, joita ei tunneilla tai läksyissä kokeiltu, nekin kelpaavat.
-
+Teen myöhemmin jos ehdin.
 
 ## Lähteet
 ansible-doc copy. Ansiblen sisäänrakennettu dokumentaatio copy -moduulista.
