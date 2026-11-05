@@ -1,0 +1,33 @@
+miika@debian:~$ sudo journalctl --grep caddy -n 30
+WARNING: terminal is not fully functional
+Press RETURN to continue 
+Nov 05 17:25:14 debian sudo[45841]:    miika : TTY=pts/1 ; PWD=/home/miika ; USER=root ; COMMAND>
+Nov 05 16:36:54 debian systemd[1]: Reloaded caddy.service - Caddy.
+Nov 05 16:36:54 debian caddy[45361]: {"level":"info","ts":1793896614.602093,"msg":"autosaved con>
+Nov 05 16:36:54 debian caddy[45752]: {"level":"info","ts":1793896614.5976152,"msg":"using provid>
+Nov 05 16:36:54 debian systemd[1]: Reloading caddy.service - Caddy...
+Nov 05 16:36:54 debian sudo[45747]:    miika : TTY=pts/0 ; PWD=/home/miika ; USER=root ; COMMAND>
+Nov 05 16:35:52 debian sudo[45732]:    miika : TTY=pts/0 ; PWD=/home/miika ; USER=root ; COMMAND>
+Nov 05 16:23:51 debian systemd[1]: Reloaded caddy.service - Caddy.
+Nov 05 16:23:51 debian caddy[45361]: {"level":"info","ts":1793895831.7664254,"msg":"autosaved co>
+Nov 05 16:23:51 debian caddy[45634]: {"level":"info","ts":1793895831.762232,"msg":"using provide>
+Nov 05 16:23:51 debian systemd[1]: Reloading caddy.service - Caddy...
+Nov 05 16:23:51 debian sudo[45629]:    miika : TTY=pts/0 ; PWD=/home/miika ; USER=root ; COMMAND>
+Nov 05 16:23:07 debian sudo[45617]:    miika : TTY=pts/0 ; PWD=/home/miika ; USER=root ; COMMAND>
+Nov 05 16:11:44 debian sudo[45567]:    miika : TTY=pts/0 ; PWD=/home/miika ; USER=root ; COMMAND>
+Nov 05 16:00:48 debian systemd[1]: Reloaded caddy.service - Caddy.
+Nov 05 16:00:48 debian caddy[45361]: {"level":"info","ts":1793894448.607571,"msg":"autosaved con>
+Nov 05 16:00:48 debian caddy[45531]: {"level":"info","ts":1793894448.6027482,"msg":"using provid>
+Nov 05 16:00:48 debian systemd[1]: Reloading caddy.service - Caddy...
+Nov 05 16:00:48 debian sudo[45526]:    miika : TTY=pts/0 ; PWD=/home/miika ; USER=root ; COMMAND>
+Nov 05 15:58:02 debian sudo[45510]:    miika : TTY=pts/0 ; PWD=/home/miika ; USER=root ; COMMAND>
+Nov 05 15:56:22 debian sudo[45491]:    miika : TTY=pts/0 ; PWD=/home/miika ; USER=root ; COMMAND>
+Nov 05 15:47:56 debian systemd[1]: Started caddy.service - Caddy.
+Nov 05 15:47:56 debian caddy[45361]: {"level":"info","ts":1793893676.8697455,"msg":"autosaved co>
+Nov 05 15:47:56 debian caddy[45361]: {"level":"info","ts":1793893676.869242,"logger":"tls","msg">
+Nov 05 15:47:56 debian caddy[45361]: {"level":"info","ts":1793893676.8648455,"msg":"using provid>
+Nov 05 15:47:56 debian caddy[45361]: MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/system.slice/caddy.ser>
+Nov 05 15:47:56 debian caddy[45361]: HOME=/var/lib/caddy
+Nov 05 15:47:56 debian caddy[45361]: LOGNAME=caddy
+Nov 05 15:47:56 debian caddy[45361]: USER=caddy
+Nov 05 15:47:56 debian caddy[45361]: caddy.Version=2.6.2
