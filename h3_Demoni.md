@@ -168,13 +168,67 @@ Raportistani löytyikin nopeasti yksi kohta, minkä olin aikaisemmin lisännyt 0
 ![](h3/directory.png)
 
 ## b) Moottorix. Asenna Nginx käsin. Weppisivun tulee näkyä palvelimen etusivulla. Sivun tulee olla tavallisen käyttäjän muokattavissa, ilman root- tai sudo-oikeuksia. (Muista sammuttaa Apache ensin.)
+Nginx:n asennus menikin sitten huomattavasti helpommin, kun olin tehnyt apachen ensin pois alta. Nämä demonit ovat tosiaan melko samanlaisia perustoiminnoiltaan.
 
+Aloitin asentamalla demonin.
+
+	sudo apt-get install -y nginx
+
+![](h3/nginx-install.png)
+
+Käyttökelpoisia komentoja löytyi taas 
+
+	tldr nginx
+
+Nginxin konfiguraation voi turvallisesti testata komennolla:
+
+	sudo nginx -t
+
+Se kertoi minulle että kaikki on kunnossa ja näytti samalla configuraatiotiedoston polun.
+
+![](h3/tldr-nginx.png)
+
+Komennoilla
+
+	sudo systemctl enable --now nginx
+	sudo systemctl status nginx
+
+käynnistin demonin ja tarkistin sen tilan. --now parametri käynnistää demonin välittömästi, jolloin sitä ei tarvitse potkaista erikseen.
+
+	curl localhost
+
+näytti että nginx oletussivu näkyy localhostilla.
+
+![](h3/nginx-enable.png)
+
+	sudo cat /etc/nginx/nginx.conf
+
+kertoi, että nginx:llä on samanlainen sites-enabled hakemisto kuin apachella.
+
+![](h3/nginx-sites.png)
+
+Kävin vaihtamassa html -tiedoston polun omaan kotihakemistooni.
+
+	sudo micro /etc/nginx/sites-available/default
+
+![](h3/default.png)
+
+Lopuksi potkaisin demonia ja ajoin curlin uudestaan, jolloin sain oman html:n näkyviin.
+
+	sudo sytemctl reload nginx
+	curl localhost
+
+![](h3/nginx-ready.png)
 
 ## c) Automoottorix. Automatisoi Nginx asennus Ansiblella. Ylläpitäjän osuus Ansiblella riittää, itse HTML-weppisivut voi tehdä käsin.
 
 
 ## Lähteet
-Karvinen, T 1. 2026. Palvelinten Hallinta. Luettavissa: https://terokarvinen.com/palvelinten-hallinta/. Luettu: 6.11.2026
+Ansible Community Documentation. Handlers: running operations on change. Luettavissa: https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_handlers.html Luettu: 6.11.2026.
 
-Nordblad, M. 7.9.2025. Hello Web Server. Luettavissa: https://github.com/m1seno/linux-palvelimet/blob/main/h3%20Hello%20Web%20Server.md. Luettu: 7.11.2026
+Karvinen, T 1. 2026. Palvelinten Hallinta. Luettavissa: https://terokarvinen.com/palvelinten-hallinta/ Luettu: 6.11.2026.
+
+Karvinen, T 2. 2026. Apache installed with Ansible - quick notes. Luettavissa: https://terokarvinen.com/apache-ansible/ Luettu: 6.11.2026.
+
+Nordblad, M. 7.9.2025. Hello Web Server. Luettavissa: https://github.com/m1seno/linux-palvelimet/blob/main/h3%20Hello%20Web%20Server.md Luettu: 7.11.2026.
 
