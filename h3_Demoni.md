@@ -221,10 +221,73 @@ Lopuksi potkaisin demonia ja ajoin curlin uudestaan, jolloin sain oman html:n n�
 ![](h3/nginx-ready.png)
 
 ## c) Automoottorix. Automatisoi Nginx asennus Ansiblella. Ylläpitäjän osuus Ansiblella riittää, itse HTML-weppisivut voi tehdä käsin.
+Päätin tehdä tämän harjoituksen sillä olettamuksella, että orjakoneella ei ole mitään tehty sen eteen, että nginx toimisi. Eli ei edes ufw portteja auki. Käyttäjän kotihakemiston html:n sen sijaan loin manuaalisesti, enkä käy sen luomista tässä raportissa sen tarkemmin läpi. Oikeat toimenpiteet voi käydä lukemassa tämän raportin aikaisemmista harjoituksista.
 
+Aloitin tekemällä uuden nginx hakemiston rooleihin. Tänne tein main -tiedoston johon apt -moduulin avulla asensin ufw:n ja nginxin. Lisäsin site.yml:iin nginxin ja ajoin playbookin.
+
+	mkdir -p roles/nginx/tasks
+	micro roles/nginx/tasks/main.yml.
+	ansible-playbook site.yml
+
+![](h3/apt.png)
+
+Loin hakemiston nginxin konfiguraatiotiedostolle ja kopioin edellisessä tehtävässä muokkaamani default tiedoston. Päätin käyttää default tiedostoa, koska se ylikirjoittaa olemassaolevan tiedoston eikä luo uutta.
+
+	mkdir roles/nginx/files
+	micro roles/nginx/files/default
+
+![](h3/ansible-default.png)
+
+Tässä kohtaa kirjoitin myös handlerin valmiiksi myöhempää käyttöä varten.
+
+	mkdir roles/nginx/handlers
+	micro roles/nginx/handlers/main.yml
+
+![](h3/handlers.png)
+
+Löysin netistä artikkelin (Berton 2021), jossa käytiin läpi ufw:n konfiguroimista ansiblen avulla.
+
+Loin säännön, jonka avulla avataan portti ja käynnistetään ufw.
+
+![](h3/ufw2.png)
+
+- `state: enabled` käynnistää palomuurin.
+- `logging: "on"` ottaa palomuuriin liittyvän lokituksen käyttöön.
+
+![](h3/copy.png)
+
+Moduuli aiheutti kuitenkin errorin.
+
+![](h3/error.png)
+Ansible herjasi notify-moduulia, jonka olin epähuomiossa laittanut copyn parametriksi.
+
+Korjasin tämän, jonka jälkeen aiheutin heti seuraavan errorin.
+
+![](h3/error2.png)
+
+Aluksi luulin, että olen laittanut jonkin ylimääräinen välilyönnin johonkin kohtaan, mutta tarkasteltuani erroria tarkemmin, huomasin, että copy-moduuli suoritettiin onnistuneesti ja virhe tuli handleria suoritettaessa. Nginx vastaa ja pyytää tutkimaan nginx:n lokeja.
+
+Kirjauduin ssh:lla palvelimeen ja ajoin komennon
+
+	sudo nginx -t
+
+![](h3/nginx-t.png)
+
+On muuten fiksu systeemi! nginx kertoo tasan tarkkaan missä virhe on ja mikä sen aiheuttaa. Olin epähuomiossa jättänyt pois viimeisen kaarisulkeen.
+
+Laitoin tiedoston loppuun kaarisulkeen ja ajoin playbookin.
+
+![](h3/default-fixed.png)
+![](h3/playbook-success.png)
+
+Ja nyt näemme, että palvelimella näkyy käyttäjän kotihakemistossa oleva html.
+
+![](h3/hello_world.png)
 
 ## Lähteet
 Ansible Community Documentation. Handlers: running operations on change. Luettavissa: https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_handlers.html Luettu: 6.11.2026.
+
+Berton, L. 3.9.2021. UFW Allow Port with Ansible: Complete Firewall Management Guide (Ubuntu/Debian). Luettavissa: https://www.ansiblepilot.com/articles/open-firewall-ports-in-debian-like-systems-ansible-module-ufw Luettu: 8.11.2026
 
 Karvinen, T 1. 2026. Palvelinten Hallinta. Luettavissa: https://terokarvinen.com/palvelinten-hallinta/ Luettu: 6.11.2026.
 
