@@ -222,6 +222,7 @@ Lopuksi potkaisin demonia ja ajoin curlin uudestaan, jolloin sain oman html:n n�
 
 ## c) Automoottorix. Automatisoi Nginx asennus Ansiblella. Ylläpitäjän osuus Ansiblella riittää, itse HTML-weppisivut voi tehdä käsin.
 Päätin tehdä tämän harjoituksen sillä olettamuksella, että orjakoneella ei ole mitään tehty sen eteen, että nginx toimisi. Eli ei edes ufw portteja auki. Käyttäjän kotihakemiston html:n sen sijaan loin manuaalisesti, enkä käy sen luomista tässä raportissa sen tarkemmin läpi. Oikeat toimenpiteet voi käydä lukemassa tämän raportin aikaisemmista harjoituksista.
+Tehtävässä katsottiin mallia Teron tekemästä dokumentista (Karvinen 2026, 2).
 
 Aloitin tekemällä uuden nginx hakemiston rooleihin. Tänne tein main -tiedoston johon apt -moduulin avulla asensin ufw:n ja nginxin. Lisäsin site.yml:iin nginxin ja ajoin playbookin.
 
