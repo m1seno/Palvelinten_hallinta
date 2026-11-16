@@ -1,5 +1,5 @@
 # Pizza Fantasia
-Harjoitukset on tehty kotitoimistossa Kaarinassa. Koneena oli Tuxedo InfinityBook Pro AMD Gen10. Käyttöjärjestelmän toimi Parrot Security 7.4 (echo) x86_64.  
+Harjoitukset on tehty kotitoimistossa Kaarinassa. Koneena oli Tuxedo InfinityBook Pro AMD Gen10. Koneen käyttöjärjestlmänä toimii Fedora Linux 44. Virtuaalikoneen käyttöjärjestelmä on Parrot Security 7.4 (echo) x86_64. Virtuaalipalvelimen käyttis sen sijaan Debian 13.
 Harjoituksessa seurataan Teron kotisivujen (Karvinen 2026) tehtävänantoa.
 ## x) Lue ja tiivistä.
 ### 4.12.1 Size and Complexity of Some DSLs (Karvinen 2024, 112)
