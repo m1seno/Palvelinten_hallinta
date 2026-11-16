@@ -124,7 +124,7 @@ Oman mielenrauhan takaamiseksi kävin kuitenkin tarkistamassa, että demoni on t
 
 Seuraavaksi tässä tarvittiin become_user -avainsanaa, jota Tero esitteli torstain luennolla.
 
-Ansiblen dokumentaation (ansible-doc) mukaan tätä käytetään oikeuksien korottamiseen. Tässä tapauksessa muutos tehdään postgres -käyttäjänä (sama kuin `sudo -u postgres`)
+Ansiblen dokumentaation (ansible-doc, 1) mukaan tätä käytetään oikeuksien korottamiseen. Tässä tapauksessa muutos tehdään postgres -käyttäjänä (sama kuin `sudo -u postgres`)
 
 ![](h4/ansible-doc.png)
 
@@ -191,10 +191,94 @@ Testataan vielä, että voimme manuaalisesti luoda taulun ja jotain tietoa tieto
 
 ![](h4/ansible-test.png)
 ## c) Asetus. Muuta asetustiedostoa herralla (master, "control node") ja aja ansible uudestaan. Osoita, että asetukset tulivat käyttöön.
+Otin ssh-yhteyden palvelimeen ja lähdin etsimään postgresin asetustiedostoa.
+
+	locate postgres | grep conf
+
+Sieltä löytyikin lupaavan oloinen tiedosto.
+
+![](h4/locate.png)
+![](h4/postgres-conf.png)
+
+En oikein tiennyt mitä tässä kannattaisi lähteä muuttamaan, mutta en ainakaan halua ylikirjoittaa koko tiedostoa, joten copy-moduuli ei tullut kuuloonkaan.
+
+Löysin sellaisen moduulin, kuin lineinfile. Sillä voi muuttaa yksittäisen rivin tiedostossa. Moduuli on myös itsessään idempotentti. Sillä voi varmistaa, että kyseinen rivi löytyy tiedostosta, mutta se ei ylikirjoita mitään, ellei sitä erikseen halua(ansible-doc) 2). 
+
+![](h4/lineinfile-doc.png)
+
+Loin uuden moduulin mainiin.
+
+![](h4/lineinfile.png)
+
+- `insertafter: EOF` lisää rivi tiedoston loppuun (end of file).
+
+Myös playbookin ajaminen onnistui kertalaakista.
+
+![](h4/playbook-lineinfile.png)
+
+Kävin vielä lopuksi tarkistamassa, että muutokset tosiaan tehtiin tiedostoon.
+
+![](h4/lineinfile-test.png)
+
+Olin tehnyt kaikki viikon tehtävät kun tajusin, että olin unohtanut tehdä handlerin joka käynnistää postgresin conf-tiedoston muokkaamisen jälkeen. Eli handleria ei tule näkymään kahdessa seuraavassa tehtävässä, mutta sen toiminnan testaan tässä.
+
+Loin handlerin ja lisäsin sen suorituksen taskin mainiin. Lisäksi muutin hieman tekstiä joka lisätään tiedoston loppuun.
+
+![](h4/handler-test.png)
+
+Testi onnistui ja handler ajettiin.
+
+![](h4/handler-test2.png)
+
+
 ## d) Paikka remonttiin. Riko jotain asetuksia. Voit esimerkiksi poistaa demonin 'sudo apt-get purge foobar' (purge poistaa myös asetustiedostoja), poistaa asennuksen yhteydessä tulevan kansion (sudo rm -r /etc/foobar/ # vaarallista) tms. Ja sitten ajaa ansible-roolisi uudestaan ja todeta, että se korjaa tilanteen.
+Kirjauduin jälleen palvelimeen ja poistin PostgreSQL asennuksen
+
+	sudo systemctl disable --now postgresql
+	sudo apt-get purge postgresql
+
+Tarkistin, että postgres ei tosiaan toimi enää koneella.
+
+![](h4/break.png)
+
+Ajoin playbookin uudestaan.
+
+![](h4/fix.png)
+
+Kuten odottaa saattoi ainoastaan paketti asennettiin ja demoni käynnistettiin. Mutta käyttäjää ja tietokantaa ei luotu, koska en ajanut
+
+	sudo apt-get purge 'postgresql*'
+
+tai 
+
+	sudo apt-get autoremove
+
+Tarkistetaan vielä, että pääsemme kirjautumaan postgresiin ja lisäämään/näkemään tietoja.
+
+![](h4/break-test.png)
+
+Käyttäjä, tietokanta sekä sen siältö olivat edelleen tallessa.
+
 ## e) Idempotentti. Osoita, että tilasi on idempotentti.
+
+Tilan idempotenttiuden voi tarkistaa ajamalla
+
+	ansible-palybook site.yml --diff
+
+- `--diff` parametri näyttää tehdyt muutokset tulosteessa.
+
+Tämä ajetaan ensin tyhjälle koneelle
+
+![](h4/idempotent1.png)
+
+Ja sitten heti perään uudestaan. Mitään muutoksia ei pitäisi tehdä toisella kerralla.
+
+![](h4/idempotent2.png)
+
 ## Lähteet
-Ansible-doc. `ansible-doc -t keyword become_user`. Ansiblen sisäänrakennettu ohje linuxin terminaalissa.
+ansible-doc, 1. `ansible-doc -t keyword become_user`. Ansiblen sisäänrakennettu ohje Linuxin terminaalissa.
+
+ansible-doc, 2. `ansible-doc lineinfile`. Ansiblen sisäänrakennettu ohje Linuxin terminaalissa.
 
 Ansible Core Documentation. Risks of becoming an unprivileged user. Luettavissa: https://docs.ansible.com/projects/ansible-core/2.20/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user Luettu: 15.11.2026.
 
