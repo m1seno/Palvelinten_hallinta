@@ -41,6 +41,8 @@ Lisää kaikki muokatut tiedostot odottamaan committia.
 	git reset --hard
 
 Poistaa kaikki tehdyt muutokset ja palauttaa repon edellisen commitin tilaan.
+
+![](h5/reset.png)
 ## d) Tukki. Tarkastele ja selitä varastosi lokia. Näytä myös, mitä muutoksia tiedostoihin on tehty. Tarkista, että nimesi ja sähköpostiosoitteesi näkyy haluamallasi tavalla ja korjaa tarvittaessa.
 En ole käyttänyt `git log --patch` komentoa aikaisemmin. Kokeilin sitä toisessa repositoriossa, jossa oli kymmeniä committeja. Ilmeisesti se näyttää koko commit-historian sekä jokaisen commitin sisällön. 
 
