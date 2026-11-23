@@ -3,7 +3,20 @@ Harjoitukset on tehty kotitoimistossa Kaarinassa. Koneena oli Tuxedo InfinityBoo
 Harjoituksessa seurataan Teron kotisivujen (Karvinen 2026) tehtävänantoa.
 ## x) Lue ja tiivistä. (Tässä x-alakohdassa ei tarvitse tehdä testejä tietokoneella, vain lukeminen tai kuunteleminen ja tiivistelmä riittää. Tiivistämiseen riittää muutama ranskalainen viiva. Kannattaa lisätä mukaan myös jokin oma havainto, idea tai kysymys.)
 #### Chacon and Straub 2014: Pro Git, 2ed: 1.3 Getting Started - What is Git?
+- Git tallentaa projektin tilan snapshotseina, ei pelkästään tiedostojen muutoksina.
+- Git toimii pääosin paikallisesti. Koko projektin versionhallinta on käyttäjän omalla koneella.
+- Git käyttää hajautusarvoja (SHA-1 tai SHA-256) tiedostojen eheyden varmistamiseksi.
+- Git ei poista tietoa, vaan kirjoittaa sitä. Tämä mahdollistaa vanhempien snapshottien palauttamisen tarvittaessa.
+- Gitin kolme tilaa ovat Modified (muokattu), Staged (lisätty seuraavaan commitiin) ja Committed (tallennettu paikalliseen Git-tietokantaan).
+
 #### Gitin käyttö on lähinnä 'git add --all && git commit; git pull && git push'. Selitä tuon komennon jokainen osa. Käytä apuna itse valitsemiasi lähteitä ja viittaa niihin.
+- `git add --all` Lisää kaikki muokatut tiedostot staged -tilaan. Itse tykkään käyttää `git add .` joka tekee käytännössä saman asian.
+- `git commit` Tallentaa muutokset repositorioon.
+- `git pull` Hae muutokset etäreposta tai toisesta paikallisesta haarasta ja integroi ne nykyiseen paikalliseen haaraan. (Tämä saattaa tarvita `git merge`, jos olet jo ehtinyt tehdä muutoksia ennen pullia.)
+- `git push` Työnnä commitit etärepoon.
+
+Tietolähteenä toimi (git -h), sekä (Chacon and Straub 2014).
+
 ## a) Online. Tee uusi varasto GitHubiin (tai Gitlabiin tai mihin vain vastaavaan palveluun). Varaston nimessä ja lyhyessä kuvauksessa tulee olla sana "sunshine". Aiemmin tehty varasto ei kelpaa. (Muista tehdä varastoon tiedostoja luomisvaiheessa, esim README.md ja GNU General Public License 3) Edistyneemmille voi olla hauskaa etsiä ja kokeilla jokin muu palvelu kuin Github.
 Tein uuden repositorion githubiin. Luontivaiheessa vahvistin, että haluan luoda README.md -tiedoston, jonne kuvaukseen kirjoittamani teksti menee. Lisäksi valitsin lisenssiksi Teron suositteleman GNU3:n.
 ![](h5/etärepo.png)
@@ -140,7 +153,12 @@ Sitten puskin vielä muutokset etärepoon.
 Tero antoi luvan tehdä projektin yksilötyönä.
 
 ## Lähteet
+Chacon and Straub. 2014. 1.3 Getting Started - What is Git?. Luettavissa: https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F Luettu: 23.11.2026.
+
+git -h. Gitin sisäänrakennettu help-työkalu linuxin terminaalissa. Luettu: 23.11.2026
 
 git-scm.com. Git Cheat Sheet. Luettavissa: https://git-scm.com/cheat-sheet Luettu: 23.11.2026.
+
+Karvinen, T . 2026. Palvelinten Hallinta. Luettavissa: https://terokarvinen.com/palvelinten-hallinta/ Luettu: 20.11.2026.
 
 OpenAI. 2026. ChatGPT (GPT-6). Tekoälyavusteinen keskustelu paikallisen- ja etärepon ristiriidasta. 23.11.2026.
