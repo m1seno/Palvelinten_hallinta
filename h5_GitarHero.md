@@ -29,5 +29,118 @@ Lisää kaikki muokatut tiedostot odottamaan committia.
 
 Poistaa kaikki tehdyt muutokset ja palauttaa repon edellisen commitin tilaan.
 ## d) Tukki. Tarkastele ja selitä varastosi lokia. Näytä myös, mitä muutoksia tiedostoihin on tehty. Tarkista, että nimesi ja sähköpostiosoitteesi näkyy haluamallasi tavalla ja korjaa tarvittaessa.
+En ole käyttänyt `git log --patch` komentoa aikaisemmin. Kokeilin sitä toisessa repositoriossa, jossa oli kymmeniä committeja. Ilmeisesti se näyttää koko commit-historian sekä jokaisen commitin sisällön. 
+
+Juuri tekemässäni repossa on pelkästään yksi commit, mutta sitä voi silti tarkastella.
+
+![](h5/log-licence.png)
+
+Ensimmäisenä näkyy commitin id. Tämän jälkeen kommitin kirjoittaja sekä päivämäärä.
+
+Initial commit on commitin message. Tässä tapauksessa se on generoitu automaattisesti kun olen luonut repon.
+
+Koska lisenssi on tekstitiedosto, myös sen sisältö näytetään kokonaan.
+
+![](h5/log-readme.png)
+
+Toisessa kuvassa näkyy lisenssin loppu sekä seuraava tiedosto mikä luotiin, eli README.md. 
+
+Vihreät + merkit tarkoittavat lisättyjä rivejä. Jos näkyisi punaisia miinuksia, ne olisivat poistettuja rivejä.
 ## e) Gitanbile. Laita Ansible-kansio versionhallintaan. Tee jokin muutos, aja ansiblella, tallenna versio (commit).
+Tein ansible-kansiosta repositorion
+
+	git init
+
+![](h5/init.png)
+
+Seuraavaksi loin githubiin uuden etärepositorion.
+
+![](h5/ansible-etärepo.png)
+
+Tämä tulee aiheuttamaan ongelman, mihin olen monesti ennenkin törmannyt, sillä etärepon luominen tekee automaattisesti initial commitin. Tämä aiheuttaa ristiriidan etärepon ja paikallisen repon välillä. Mutta olen aina onnistunut tämän korjaamaan tekoälyn avustuksella, joten enköhän pysty siihen nyttenkin.
+
+Tässä kohtaa piti luntata netistä ohjeita. Gitin sivuilta löytyy hyvä cheat sheet mistä näkee yleisimmin tarvittavat komennot (git-scm.com).
+
+
+Seuraavaksi annoin seuraavat komennot:
+
+	git remote add <name> <url>
+	git remote -v
+
+Ensimmäinen komento lisää etärepon osoitteen paikalliseen repositorioon.
+Toinen komento tarkistaa, että lisäys onnistui.
+
+Koitin myös lisätä lisenssin paikalliseen repooni komennolla:
+
+	git fetch origin main
+
+Mutta tämä ei toiminut, joten sitä ei kannata kokeilla.
+
+![](h5/add-remote.png)
+
+Seuraavaksi sitten peruskomennot muutoksien lisäykseen.
+
+	git status
+	git add .
+	git commit -m "Kommentti"
+	git push
+
+![](h5/sacp.png)
+
+Git herjaa, että main-haara ei seuraa mitään vastinparia etärepossa, ja suositteleekin, että annetaan parametri `--set-upstream origin main`, jolla määritellään, että aina jatkossa paikallisen main-haaran muutokset pusketaan etärepon main-haaraan, jolloin jatkossa pelkkä `git push` riittää.
+
+![](h5/set-upstream.png)
+
+Tässä tultiin nyt siihen ongelmaan, minkä mainitsin aikaisemmin. Git suositteli ajamaan git pull, mutta kun tämäkin epäonnistui, niin pyysin tekoälyltä apua (OpenAI).
+
+Tekoäly suositteli komentoa:
+
+	git pull --no-rebase origin main --allow-unrelated-histories
+	
+- `--no-rebase` Halutaan käyttää mergeä, ei rebasea, haarojen yhdistämiseen.
+- `--allow-unrelated-histories` Sallii kahden Git-historian yhdistämisen, joilla ei ole yhteistä alkuperäistä committia.
+
+En itse tiennyt mitä eroa on rebasella ja mergellä. Ohjelmointiprojekti -kurssilla neuvottiin käyttämään mergeä.
+
+Samassa keskustelussa tekoäly kuitenkin tarjosi tähän hyvän selityksen (OpenAI).
+
+![](h5/rebase-merge.png)
+
+Ajoin kyseisen komennon onnistuneesti. Kuten ansible-kansion sisällöstä nähdään, niin Lisenssi on siirtynyt nyt myös paikalliseen repoon.
+
+![](h5/pull-success.png)
+
+#### HUOM
+Kun kyseisen komennon ajaa, avaa git automaattisesti tekstieditorin, johon voi muokata merge-commitin tietoja. Tämä ei kuitenkaan ole tarpeellista, joten tiedoston voi tallentaa ja editorin sulkea.
+
+Sitten oli enää jäljellä paikallisten tiedostojen siirto etärepoon.
+
+	git push -u origin main
+
+- `-u` == `--set-upstream`
+
+Kävin myös muodon vuoksi tarkistamassa, että kaikki kansion sisältö näkyy GitHubissa.
+
+![](h5/push.png)
+![](h5/remote-check.png)
+
+Lopuksi tein vielä muutoksen site.yml. Kommentoin kaikki muut roolit pois, paitsi upgraden, joka ajaa virtuaalipalvelimelleni dist-upgraden.
+
+![](h5/change-ansible.png)
+
+Playbook ajettiin onnistuneesti.
+
+![](h5/playbook.png)
+
+Sitten puskin vielä muutokset etärepoon.
+
+![](h5/push-changes.png)
+
 ## f) Hae pari projektiin Moodlen keskustelusta. (Tästä alakohdasta f ei tarvitse tehdä vaiheittaista teknistä raporttia, riittää kun toteat, että pari on hankittu. Pasilan ryhmä haki parin jo edellisessä tehtävässä, joten tämä on online-ryhmälle -3017.)
+Tero antoi luvan tehdä projektin yksilötyönä.
+
+## Lähteet
+
+git-scm.com. Git Cheat Sheet. Luettavissa: https://git-scm.com/cheat-sheet Luettu: 23.11.2026.
+
+OpenAI. 2026. ChatGPT (GPT-6). Tekoälyavusteinen keskustelu paikallisen- ja etärepon ristiriidasta. 23.11.2026.
