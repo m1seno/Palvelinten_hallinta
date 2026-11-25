@@ -27,6 +27,14 @@ Kopioin githubista ssh-osoitteen ja kloonasin sen avulla etärepon omalle koneel
 	git clone git@github.com:m1seno/sunshine.git
 
 ![](h5/clone.png)
+
+Tein muutoksen README.md ja puskin muutokset githubiin.
+
+![](h5/changes.png)
+
+Muutokset tulivat myös näkyviin githubiin.
+
+![](h5/changes-github.png)
 ## c) Doh! Tee tyhmä muutos gittiin, älä tee commit:tia. Tuhoa huonot muutokset ‘git reset --hard’. Huomaa, että tässä toiminnossa ei ole peruutusnappia.
 Muokkasin README -tiedostoa.
 
